@@ -17,7 +17,7 @@ st.header('About Soraie Miyabi Kimono Service')
 # 画像の表示
 kimono_image = st.image("kimono_nine.png", caption="Kimono Image")
 # 動画の表示
-kimono_video = st.video("kimono_ig.webm", format="video/webm")
+kimono_video = st.video("kimono_ig.mp4", format="video/mp4")
 
 st.header('Q&A')
 
