@@ -3,10 +3,11 @@ import json
 import os
 import gspread
 
-# 環境変数からサービスアカウント情報を取得
+# 環境変数からサービスアカウントのJSON情報を読み込む
 gcp_service_account_info = json.loads(os.environ['GCP_SERVICE_ACCOUNT_JSON'])
-# gspreadの認証
-gc = gspread.service_account_info(gcp_service_account_info)
+
+# gspreadに認証情報を渡してクライアントを初期化
+gc = gspread.service_account_from_dict(gcp_service_account_info)
 
 
 # titleの表示
