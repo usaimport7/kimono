@@ -2,6 +2,8 @@ import streamlit as st
 import json
 import os
 import gspread
+from datetime import datetime
+import pytz
 
 # 環境変数からサービスアカウントのJSON情報を読み込む
 gcp_service_account_info = json.loads(os.environ['GCP_SERVICE_ACCOUNT_JSON'])
@@ -93,17 +95,30 @@ with st.form('Reservation Form'):
         '15:00', '15:30', '16:00', '16:30'
     ])
     
+    # 入力値のバリデーション
+    all_fields_filled = name and address and phone and email
+    today = datetime.now().date()
+    valid_date = reservation_date >= today
+    
     submitted = st.form_submit_button('SUBMIT')
+    
     if submitted:
-        # 予約情報をスプレッドシートに記録
-        sh = gc.open("soraiekimono")
-        worksheet = sh.sheet1
-        worksheet.append_row([
-            name, address, phone, email, str(people_count), 
-            str(reservation_date), reservation_time
-        ])
-        st.success('Sent successfully! Please Pay below to Reserve your spot. Your spots will not be confirmed until payment is made.')
-        
-        # 送信後に表示されるリンク
-        st.markdown('Please [CLICK HERE](https://buy.stripe.com/5kA3ee0HW7R07WU9AN) to make a payment. (Our staff will contact you after your payment.)')
-
+        if not all_fields_filled or not valid_date:
+            if not all_fields_filled:
+                st.error('Please fill in all the fields.')
+            if not valid_date:
+                st.error('Reservation Date must be today or later.')
+        else:
+            # 予約情報をスプレッドシートに記録
+            # 以下のコードは、実際のGoogle Sheets APIの使用例です
+            # 実際のアプリケーションでは、Google Sheets APIを設定し、認証を行う必要があります
+            sh = gc.open("soraiekimono")
+            worksheet = sh.sheet1
+            worksheet.append_row([
+                name, address, phone, email, str(people_count), 
+                str(reservation_date), reservation_time
+            ])
+            st.success('Sent successfully! Please Pay below to Reserve your spot. Your spots will not be confirmed until payment is made.')
+            
+            # 送信後に表示されるリンク
+            st.markdown('Please [CLICK HERE](https://buy.stripe.com/5kA3ee0HW7R07WU9AN) to make a payment. (Our staff will contact you after your payment.)')
