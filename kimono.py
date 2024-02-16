@@ -9,7 +9,6 @@ gcp_service_account_info = json.loads(os.environ['GCP_SERVICE_ACCOUNT_JSON'])
 # gspreadに認証情報を渡してクライアントを初期化
 gc = gspread.service_account_from_dict(gcp_service_account_info)
 
-
 # titleの表示
 st.title('Wanna Wear Kimono?')
 
@@ -37,7 +36,7 @@ with st.expander("About Dressing"):
     - **How long does it take to change clothes?**
         - Typically, female customers require about 30 minutes, while male customers require about 10 minutes.
 """)
-    
+
 # 返却について
 with st.expander("About Returns"):
     st.markdown("""
@@ -46,7 +45,7 @@ with st.expander("About Returns"):
     - **What should I do if I cannot return the items on time or if I want to borrow them until the next day?**
         - If you cannot return the items on time, a late fee of 3000 yen per person will be charged for every 30 minutes delayed. If you wish to return the items the next day, please inform the staff in advance, pay the extension fee of 1000 yen per person and the deposit, and you can return the items by 11 a.m. the next day.
 """)
-    
+
 # レンタルについて
 with st.expander("About Rentals"):
     st.markdown("""
@@ -60,25 +59,20 @@ with st.expander("About Rentals"):
         - Yes, various electronic money options in addition to credit cards are accepted.
     - **If I prepay or make a reservation and need to change plans, can I get a refund?**
         - Full refunds are possible up to 7 days before the reservation date, but not within 7 days. However, changes to the schedule are possible. Please contact us as soon as possible if you wish to cancel. Please note that cancellations and refunds are not possible once the schedule has been changed. (Up to two schedule changes only.)
-    - **Other Notes**
-        - Can you store clothes or belongings?
-            - Yes, we offer free luggage storage, so please feel free to ask. We can also store large items. However, please store valuables such as accessories and bags yourself, as we cannot take responsibility for any loss or damage.
-        - Are there any special considerations for wearing kimonos in winter?
-            - In winter, customers can wear their own Heattech (except for turtlenecks) during the experience. However, please refrain from wearing tights that cover the feet as tabi socks need to be worn.
-    """)
+""")
 
 # 価格、場所について
 with st.expander("Price / Location"):
     st.markdown("""
     - **How much is the cost?**
-        - Usually it costs 8,000 yen per person. You need 3000 yen to reserve your spot and pay the remaining as you choose your option at the store.**    
+        - Usually it costs 8,000 yen per person (plus 10% Tax). It includes basic kimono options. You can add hair accessories options etc when you arrive at the store.
     - **Can credit cards be used?**
         - Yes, various electronic money options in addition to credit cards are accepted.
     - **If I prepay or make a reservation and need to change plans, can I get a refund?**
         - Full refunds are possible up to 7 days before the reservation date, but not within 7 days. However, changes to the schedule are possible. Please contact us as soon as possible if you wish to cancel. Please note that cancellations and refunds are not possible once the schedule has been changed. (Up to two schedule changes only.)
     - **Where should I go meet you on the reservation date?**
         - Primavera 2F, 2-20-8 Kaminarimon Taito-ku Tokyo
-    """)
+""")
 
 # 予約フォーム
 with st.form('Reservation Form'):
@@ -99,11 +93,17 @@ with st.form('Reservation Form'):
         '15:00', '15:30', '16:00', '16:30'
     ])
     
-    submit_button = st.form_submit_button('Submit & Pay to Reserve')
+    submitted = st.form_submit_button('SUBMIT')
+    if submitted:
+        # 予約情報をスプレッドシートに記録
+        sh = gc.open("soraiekimono")
+        worksheet = sh.sheet1
+        worksheet.append_row([
+            name, address, phone, email, str(people_count), 
+            str(reservation_date), reservation_time
+        ])
+        st.success('Reservation submitted successfully!')
+        
+        # 送信後に表示されるリンク
+        st.markdown('Thank you for your reservation! Please [click here](https://buy.stripe.com/5kA3ee0HW7R07WU9AN) for further information.')
 
-# Googleスプレッドシートへの書き込み
-if submit_button:
-    gc = gspread.service_account(filename=r'C:\Users\ume27\my_app_kimono\kimono-2843949effac.json')
-    sheet = gc.open('soraiekimono').sheet1
-    sheet.append_row([name, address, phone, email, people_count, reservation_date.strftime('%Y-%m-%d'), reservation_time])
-    st.success('Reservation submitted successfully!')
