@@ -102,8 +102,8 @@ with st.form('Reservation Form'):
             name, address, phone, email, str(people_count), 
             str(reservation_date), reservation_time
         ])
-        st.success('Reservation submitted successfully!')
+        st.success('Sent successfully! Please Pay below to Reserve your spot. Your spots will not be confirmed until payment is made.')
         
         # 送信後に表示されるリンク
-        st.markdown('Thank you for your reservation! Please [click here](https://buy.stripe.com/5kA3ee0HW7R07WU9AN) for further information.')
+        st.markdown('Please [CLICK HERE](https://buy.stripe.com/5kA3ee0HW7R07WU9AN) to make a payment. (Our staff will contact you after your payment.)')
 
