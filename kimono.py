@@ -120,5 +120,5 @@ with st.form('Reservation Form'):
             ])
             st.success('Sent successfully! Please Pay below to Reserve your spot. Your spots will not be confirmed until payment is made.')
             
-            # 送信後に表示されるリンク
+            # 送信後に表示されるリンク(https://buy.stripe.com/7sIeWWbmA0oy6SQfZd)
             st.markdown('Please [CLICK HERE](https://buy.stripe.com/7sIeWWbmA0oy6SQfZd) to make a payment. (Our staff will contact you after your payment.)')
